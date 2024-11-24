@@ -26,5 +26,37 @@ namespace SimulationLib
 
         public double QuarantineChance { get; set; }
 
+        public Random rand =  new Random();
+
+        public void Infect()
+        {
+            if (!IsDead && !IsQuarantined)
+            {
+                InfectionSpreadCount++;
+            }
+        }
+
+        public void Die()
+        {
+            IsDead = true;
+            IsInfected = false;
+            IsQuarantined = false;
+        }
+
+        public void SpreadInfection()
+        {
+            if (IsInfected && !IsDead && !IsQuarantined)
+            {
+                InfectionSpreadCount++;
+            }
+        }
+
+        public void PossibleQuarantine()
+        {
+            if (IsInfected && !IsQuarantined)
+            {
+                IsQuarantined = rand.NextDouble() < QuarantineChance;
+            }
+        }
     }
 }

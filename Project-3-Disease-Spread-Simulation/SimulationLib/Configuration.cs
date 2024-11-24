@@ -8,8 +8,6 @@ namespace SimulationLib
 {
     internal class Configuration
     {
-
-
         public string ParseFile(string filePath)
         {
             if (File.Exists(filePath))
@@ -27,15 +25,7 @@ namespace SimulationLib
             else
             {
                 Console.WriteLine($"File not found.");
-            }
-            
+            }   
         }
-
-
-
-
-
-
-
     }
 }
