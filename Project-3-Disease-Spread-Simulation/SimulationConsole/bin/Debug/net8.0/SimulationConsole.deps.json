@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "SimulationConsole/1.0.0": {
+        "dependencies": {
+          "SimulationLib": "1.0.0"
+        },
+        "runtime": {
+          "SimulationConsole.dll": {}
+        }
+      },
+      "SimulationLib/1.0.0": {
+        "runtime": {
+          "SimulationLib.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SimulationConsole/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SimulationLib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

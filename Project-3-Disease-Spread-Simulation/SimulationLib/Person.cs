@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimulationLib
 {
-    internal class Person
+    public class Person
     {
         public string Id { get; set; }
 
@@ -27,6 +27,18 @@ namespace SimulationLib
         public double QuarantineChance { get; set; }
 
         public Random rand =  new Random();
+
+
+
+
+        public Person()
+        {
+            
+        }
+
+
+
+
 
         public void Infect()
         {
