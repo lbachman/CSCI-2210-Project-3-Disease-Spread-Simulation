@@ -1,4 +1,8 @@
-﻿# Simulation Parameters
+﻿
+# Simulation Parameters
+#
+# do not mess with the text before the colon, adjust that values on the right to set configuration
+# 
 Mean Population Size: 1000
 Standard Deviation of Population Size: 150
 Percent Chance of Disease Spread: 25.5

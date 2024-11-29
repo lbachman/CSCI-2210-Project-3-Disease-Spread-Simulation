@@ -6,22 +6,38 @@ using System.Threading.Tasks;
 
 namespace SimulationLib
 {
-    internal class Location
+
+    /// <summary>
+    /// class implements the graph data structure, 
+    /// the Locations are the nodes and the Neighbors is an adjacency list.
+    /// People are the data contained in the nodes. 
+    /// </summary>
+    public class Location
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        public ICollection<Person> People { get; set; }
+        public ICollection<Person> People { get; set; } = new List<Person>();
 
-        public ICollection<Location> Neighbors { get; set; }
+        public ICollection<Location> Neighbors { get; set; } = new List<Location>();
 
-        public Random rand = new Random();
+        public Random Rand { get;  } = new Random();
 
-        public Location(string id)
+
+        // properties that are passed in from config object
+
+        public double SpreadChance { get; set; }
+
+        public double KillChance { get; set; }
+
+
+        // constructor takes config object
+        public Location(Configuration config)
         {
-            Id = id;
-            People = new List<Person>();
-            Neighbors = new List<Location>();
+            SpreadChance = config.SpreadChance; 
+            KillChance = config.KillChance;
+            
         }
+
 
         // okay yeah this is probably bad code, but it might work!
         public void SpreadDisease(double spread)
@@ -34,7 +50,7 @@ namespace SimulationLib
                 {
                     foreach (var infected in peopleInfected)
                     {
-                        if (infected.IsInfected && rand.NextDouble() < spread)
+                        if (infected.IsInfected && Rand.NextDouble() < spread)
                         {
                             person.Infect();
                             infected.SpreadInfection();
@@ -44,5 +60,10 @@ namespace SimulationLib
                 }
             }
         }
+
+
+
+
+
     }
 }

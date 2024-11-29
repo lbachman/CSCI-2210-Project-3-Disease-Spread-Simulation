@@ -1,5 +1,6 @@
 ﻿
 using SimulationLib;
+using System.Data.Common;
 
 namespace SimulationConsole
 {
@@ -7,12 +8,19 @@ namespace SimulationConsole
     {
         static void Main(string[] args)
         {
-
+            // file path to test data file
             string filePath = @"..\..\..\..\SimulationLib\TestData\sampleData.txt";
 
+            // config object holding all of the config parameters
             Configuration config = Utility.ParseConfigData(filePath);
+            
+            Simulation simulation = new Simulation(config);
 
-            // Console.WriteLine(config.ToString());
+            simulation.GeneratePopulation();
+
+            // for now just prints id's of locations
+            simulation.DisplayLocationInfo();
+
 
             
         }

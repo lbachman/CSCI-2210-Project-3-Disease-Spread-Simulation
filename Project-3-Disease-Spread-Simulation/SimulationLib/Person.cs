@@ -8,7 +8,7 @@ namespace SimulationLib
 {
     public class Person
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public int TravelStartTime { get; set; }
 
@@ -27,17 +27,6 @@ namespace SimulationLib
         public double QuarantineChance { get; set; }
 
         public Random rand =  new Random();
-
-
-
-
-        public Person()
-        {
-            
-        }
-
-
-
 
 
         public void Infect()
