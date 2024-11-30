@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SimulationConsole
-build_property.ProjectDir = C:\Users\14239\Desktop\CSCI-2210-Project-3-Disease-Spread-Simulation\Project-3-Disease-Spread-Simulation\SimulationConsole\
+build_property.ProjectDir = C:\Users\Admin\Documents\GitHub\CSCI-2210-Project-3-Disease-Spread-Simulation\Project-3-Disease-Spread-Simulation\SimulationConsole\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

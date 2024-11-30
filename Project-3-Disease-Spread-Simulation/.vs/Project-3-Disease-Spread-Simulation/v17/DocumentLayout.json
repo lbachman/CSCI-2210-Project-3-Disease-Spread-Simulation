@@ -1,17 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\",
+  "WorkspaceRootPath": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\chris\\source\\repos\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\admin\\documents\\github\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\simulation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|solutionrelative:simulationlib\\simulation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\admin\\documents\\github\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|solutionrelative:simulationlib\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\chris\\source\\repos\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\admin\\documents\\github\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|solutionrelative:simulationlib\\location.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\chris\\source\\repos\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|c:\\users\\admin\\documents\\github\\csci-2210-project-3-disease-spread-simulation\\project-3-disease-spread-simulation\\simulationlib\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE72185F-99B2-4F4E-9A4D-B129F2844E8C}|SimulationLib\\SimulationLib.csproj|solutionrelative:simulationlib\\configuration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,24 +26,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Configuration.cs",
-              "DocumentMoniker": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Configuration.cs",
-              "RelativeDocumentMoniker": "SimulationLib\\Configuration.cs",
-              "ToolTip": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Configuration.cs",
-              "RelativeToolTip": "SimulationLib\\Configuration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAQAAAA",
+              "DocumentIndex": 0,
+              "Title": "Simulation.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Simulation.cs",
+              "RelativeDocumentMoniker": "SimulationLib\\Simulation.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Simulation.cs",
+              "RelativeToolTip": "SimulationLib\\Simulation.cs",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAswGsAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T04:38:10.12Z",
+              "WhenOpened": "2024-11-30T09:31:50.662Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
             },
             {
               "$type": "Bookmark",
@@ -47,37 +47,48 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
+              "Title": "Configuration.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Configuration.cs",
+              "RelativeDocumentMoniker": "SimulationLib\\Configuration.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Configuration.cs",
+              "RelativeToolTip": "SimulationLib\\Configuration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-24T04:38:10.12Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Person.cs",
-              "DocumentMoniker": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Person.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Person.cs",
               "RelativeDocumentMoniker": "SimulationLib\\Person.cs",
-              "ToolTip": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Person.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Person.cs",
               "RelativeToolTip": "SimulationLib\\Person.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAADwvyIAAAAnAAAA",
+              "ViewState": "AgIAAAsAAAAAAAAAAADwvyIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-24T04:02:18.534Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Location.cs",
-              "DocumentMoniker": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Location.cs",
+              "DocumentMoniker": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Location.cs",
               "RelativeDocumentMoniker": "SimulationLib\\Location.cs",
-              "ToolTip": "C:\\Users\\chris\\source\\repos\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Location.cs",
+              "ToolTip": "C:\\Users\\Admin\\Documents\\GitHub\\CSCI-2210-Project-3-Disease-Spread-Simulation\\Project-3-Disease-Spread-Simulation\\SimulationLib\\Location.cs",
               "RelativeToolTip": "SimulationLib\\Location.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAoAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T04:02:16.973Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "WhenOpened": "2024-11-24T04:02:16.973Z"
             }
           ]
         }
