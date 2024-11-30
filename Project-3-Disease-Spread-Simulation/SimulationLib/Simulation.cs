@@ -40,7 +40,7 @@ namespace SimulationLib
         {
             using (StreamWriter writer = new StreamWriter(csvFilePath, true))
             {
-                writer.WriteLine($"{hour},{infectedMost?.Id},{spreadMost.Id},{notDead},{dead},{infected},{quaratined}");
+                writer.WriteLine($"{hour},{infectedMost?.Id},{spreadMost?.Id},{notDead},{dead},{infected},{quaratined}");
             }
         }
 
