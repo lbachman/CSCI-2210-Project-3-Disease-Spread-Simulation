@@ -10,6 +10,8 @@ namespace SimulationLib
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        public Location CurrentLocation { get; set; }  // Track the current location of the person
+
         public int TravelStartTime { get; set; }
 
         public int TravelEndTime { get; set;}
@@ -24,16 +26,48 @@ namespace SimulationLib
 
         public bool IsQuarantined { get; set; }
 
-        public double QuarantineChance { get; set; }
+        public double QuarantineChance = 0.5;
 
-        public Random rand =  new Random();
+        private static Random rand =  new Random();
+
+
+        public Person(Configuration config)
+        {
+            CurrentLocation = new Location(config);
+        }
+
+
+        public void Travel(double travelChance, List<(Person person, Location destination)> travelQueue)
+        {
+            if (rand.NextDouble() < travelChance)
+            {
+                //  if CurrentLocation or Neighbors is null or empty
+                if (CurrentLocation == null || CurrentLocation.Neighbors == null || !CurrentLocation.Neighbors.Any())
+                {
+                    Console.WriteLine($"Person {Id} cannot travel, no valid neighbors.");
+                    return;
+                }
+
+                Location destination = CurrentLocation.Neighbors.ToList()[rand.Next(CurrentLocation.Neighbors.Count)];
+
+                // Log the travel action
+                Console.WriteLine($"Person {Id} traveling from {CurrentLocation.Id} to {destination.Id}");
+
+                travelQueue.Add((this, destination));
+            }
+        }
+
+
 
 
         public void Infect()
         {
             if (!IsDead && !IsQuarantined)
             {
+                IsInfected = true;
                 InfectionSpreadCount++;
+                
+                Console.WriteLine($"Person {Id} is now infected.");  // log for debugging
             }
         }
 
@@ -49,6 +83,7 @@ namespace SimulationLib
             if (IsInfected && !IsDead && !IsQuarantined)
             {
                 InfectionSpreadCount++;
+                Console.WriteLine($"Person {Id} is spreading infection. Spread count: {InfectionSpreadCount}"); // Log the infection spread
             }
         }
 

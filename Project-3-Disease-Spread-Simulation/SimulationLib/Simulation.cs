@@ -14,35 +14,24 @@ namespace SimulationLib
 
         private Configuration config;
 
-        private string csvFilePath = "simulation_log.csv";
+        private string csvFilePath = @"..\..\..\..\SimulationLib\SimulationResults\simulation_log.csv";
 
 
-
-
+        /// <summary>
+        /// parameterized constructor that takes config obj as argument
+        /// </summary>
+        /// <param name="config"></param>
         public Simulation(Configuration config)
         {
             this.config = config;
             locations = new List<Location>();
         }
 
-        // add new methods for csv logs
-        public void InitCsv()
-        {
-            //overwrite if exists
-            using (StreamWriter writer = new StreamWriter(csvFilePath, false))
-            {
-                writer.WriteLine("Hour,InfectedMost,SpreadMost,NotDead,Dead,Infected,Quarantined");
-            }
-        }
 
-        // writes the fields to a csv file
-        public void LogCsv(int hour, Person infectedMost, Person spreadMost, int notDead, int dead, int infected, int quaratined)
-        {
-            using (StreamWriter writer = new StreamWriter(csvFilePath, true))
-            {
-                writer.WriteLine($"{hour},{infectedMost?.Id},{spreadMost?.Id},{notDead},{dead},{infected},{quaratined}");
-            }
-        }
+        
+
+
+
 
         public bool CheckEndConditions(List<Location> locations)
         {
@@ -51,6 +40,10 @@ namespace SimulationLib
 
             return totalInfected == 0 || totalAlive == 0;
         }
+
+
+
+
         public void GeneratePopulation()
         {
             // create locations
@@ -58,39 +51,49 @@ namespace SimulationLib
             Location kingsport = new Location(config);
             Location elizabethton = new Location(config);
 
+            // Define neighbors
+            johnsonCity.Neighbors.Add(kingsport);
+            johnsonCity.Neighbors.Add(elizabethton);
+            kingsport.Neighbors.Add(johnsonCity);
+            kingsport.Neighbors.Add(elizabethton);
+            elizabethton.Neighbors.Add(johnsonCity);
+            elizabethton.Neighbors.Add(kingsport);
+
+
+
             // add locations to list
             locations.Add(johnsonCity);
             locations.Add(kingsport);
             locations.Add(elizabethton);
 
+            
+
             foreach (Location location in locations)
             {
+                
+
                 // Use normal distribution to generate a population size for each location
                 int populationSize = (int)Math.Round(RandomNormal(config.MeanPopSize, config.PopStdDev));
 
                 for (int i = 0; i < populationSize; i++)
                 {
-                    var person = new Person();  // here we could set properties
+                    var person = new Person(config)
+                    {
+                        QuarantineChance = config.MeanChanceQuarantine,          
+                        CurrentLocation = location,
+
+                        
+                    };  
+
                     location.People.Add(person);
                 }
 
-            }
+                // log location info
+                Console.WriteLine($"Generated population size for {location.Id}: {populationSize}");
+
+            }  
 
         }
-
-
-
-        /// <summary>
-        /// method for testing
-        /// </summary>
-        public void DisplayLocationInfo()
-        {
-            foreach (var location in locations)
-            {
-                Console.WriteLine(location.Id);
-            }
-        }
-
 
 
 
@@ -99,7 +102,7 @@ namespace SimulationLib
         /// </summary>
         /// <param name="mean"></param>
         /// <param name="stddev"></param>
-        /// <returns></returns>
+        /// <returns>double</returns>
         private double RandomNormal(double mean, double stddev)
         {
             // Box-Muller transform to generate normal distribution
@@ -109,6 +112,11 @@ namespace SimulationLib
             return mean + z0 * stddev;
         }
 
+
+
+
+
+
         // runs simulation, initializes CSV
         public void RunSimulation()
         {
@@ -117,10 +125,31 @@ namespace SimulationLib
 
             while (hour < config.SimulationDuration)
             {
+                List<(Person person, Location destination)> travelQueue = new List<(Person person, Location destination)>();
+
                 foreach (var location in locations)
                 {
+                    // spread disease at location
                     location.SpreadDisease(config.SpreadChance);
+
+                    // iteratie over each person at the location
+                    foreach (var person in location.People.ToList())
+                    {
+                        person.Travel(config.TravelChance / 100.0, travelQueue);
+                    }
                 }
+
+                // Execute all travel actions after iteration
+                foreach (var (person, destination) in travelQueue)
+                {
+                    person.CurrentLocation.People.Remove(person); // Remove from current location
+                    destination.People.Add(person); // Add to destination
+                    person.CurrentLocation = destination; // Update current location
+                }
+
+                // Clear the travel queue for the next cycle
+                travelQueue.Clear();
+
 
                 var (infectedMost, spreadMost, notDead, dead, infected, quarantined) = GatherStatistics();
 
@@ -135,6 +164,45 @@ namespace SimulationLib
                 hour++;
             }
         }
+
+
+
+        /// <summary>
+        /// Initializes the CSV file for logging simulation data.
+        /// </summary>
+        public void InitCsv()
+        {
+            //overwrite if exists
+            using (StreamWriter writer = new StreamWriter(csvFilePath, false))
+            {
+                writer.WriteLine("Hour,InfectedMost,SpreadMost,NotDead,Dead,Infected,Quarantined");
+            }
+        }
+
+
+
+        /// <summary>
+        /// writes the fields to a csv file
+        /// </summary>
+        /// <param name="hour"></param>
+        /// <param name="infectedMost"></param>
+        /// <param name="spreadMost"></param>
+        /// <param name="notDead"></param>
+        /// <param name="dead"></param>
+        /// <param name="infected"></param>
+        /// <param name="quaratined"></param>
+        public void LogCsv(int hour, Person infectedMost, Person spreadMost, int notDead, int dead, int infected, int quaratined)
+        {
+            using (StreamWriter writer = new StreamWriter(csvFilePath, true))
+            {
+                writer.WriteLine($"{hour},{infectedMost?.Id},{spreadMost?.Id},{notDead},{dead},{infected},{quaratined}");
+            }
+        }
+
+
+
+
+
 
         // I threw in a method for getting the stats of it all
         public (Person InfectedMost, Person SpreadMost, int NotDead, int Dead, int Infected, int Quarantined) GatherStatistics()
@@ -178,5 +246,10 @@ namespace SimulationLib
             }
             return (mostInfected, mostSpread, notDead, dead, infected, quarantined);
         }
+
+
+
+
+
     }
 }

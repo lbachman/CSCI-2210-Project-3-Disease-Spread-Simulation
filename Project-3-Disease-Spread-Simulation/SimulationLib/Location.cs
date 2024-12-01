@@ -42,19 +42,35 @@ namespace SimulationLib
         // okay yeah this is probably bad code, but it might work!
         public void SpreadDisease(double spread)
         {
-            var peopleInfected =  new List<Person>(People);
+            // log number of people in location and how many are infected. 
+            Console.WriteLine($"Starting disease spread for location with {People.Count} people. Infected: {People.Count(p => p.IsInfected)}");
 
             foreach (var person in People)
             {
+
+                // Log the state of each person
+                //Console.WriteLine($"Checking person {person.Id} - Infected: {person.IsInfected}, Dead: {person.IsDead}, Quarantined: {person.IsQuarantined}");
+
+                          
                 if (!person.IsInfected && !person.IsDead && !person.IsQuarantined)
                 {
-                    foreach (var infected in peopleInfected)
+                    foreach (var infected in People)
                     {
-                        if (infected.IsInfected && Rand.NextDouble() < spread)
+                        if (infected.IsInfected)
                         {
-                            person.Infect();
-                            infected.SpreadInfection();
-                            break;
+                            // Log the chance of infection and whether it was successful
+                            double infectionChance = Rand.NextDouble();
+                            Console.WriteLine($"Person {person.Id} checking infection chance against infected person {infected.Id}: {infectionChance} < {spread} = {(infectionChance < spread ? "Infected!" : "Not infected.")}");
+
+                            if (infectionChance < spread)
+                            {
+                                person.Infect();
+                                infected.SpreadInfection();
+                                Console.WriteLine($"Person {person.Id} got infected by person {infected.Id}");
+                                break; // Exit the inner loop once a person has been infected
+                            }
+
+                            
                         }
                     }
                 }
