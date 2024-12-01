@@ -91,8 +91,29 @@ namespace SimulationLib
                 // log location info
                 Console.WriteLine($"Generated population size for {location.Id}: {populationSize}");
 
-            }  
+            }
 
+            // Infect a small percentage of the population
+            InfectInitialPopulation(0.05); 
+
+        }
+
+        private void InfectInitialPopulation(double initialInfectionRate)
+        {
+            Random randy = new Random();
+
+            foreach (var location in locations)
+            {
+                int infectedCount = (int)(location.People.Count * initialInfectionRate);
+
+                var shuffledPeople = location.People.OrderBy(p => randy.Next()).ToList();
+
+                for (int i = 0; i < infectedCount; i++)
+                {
+                    shuffledPeople[i].IsInfected = true;
+                    Console.WriteLine($"Person {shuffledPeople[i].Id} in location {location.Id} was initially infected.");
+                }
+            }
         }
 
 
