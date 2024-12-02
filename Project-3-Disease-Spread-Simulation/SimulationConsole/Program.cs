@@ -38,12 +38,6 @@ namespace SimulationConsole
                 Console.WriteLine("Simulation completed.");
 
 
-
-
-
-
-
-
                 simulation.GatherStatistics();
 
 

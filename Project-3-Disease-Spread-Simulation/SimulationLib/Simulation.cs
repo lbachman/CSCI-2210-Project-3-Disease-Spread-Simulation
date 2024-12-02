@@ -28,11 +28,6 @@ namespace SimulationLib
         }
 
 
-        
-
-
-
-
         public bool CheckEndConditions(List<Location> locations)
         {
             int totalInfected = locations.Sum(location => location.People.Count(p => p.IsInfected));
@@ -41,15 +36,12 @@ namespace SimulationLib
             return totalInfected == 0 || totalAlive == 0;
         }
 
-
-
-
         public void GeneratePopulation()
         {
             // create locations
-            Location johnsonCity = new Location(config);
-            Location kingsport = new Location(config);
-            Location elizabethton = new Location(config);
+            Location johnsonCity = new Location(config, "Johnson City");
+            Location kingsport = new Location(config, "Kingsport");
+            Location elizabethton = new Location(config, "Elizabethton");
 
             // Define neighbors
             johnsonCity.Neighbors.Add(kingsport);
@@ -66,42 +58,37 @@ namespace SimulationLib
             locations.Add(kingsport);
             locations.Add(elizabethton);
 
-            
+
 
             foreach (Location location in locations)
             {
-                
+
 
                 // Use normal distribution to generate a population size for each location
                 int populationSize = (int)Math.Round(RandomNormal(config.MeanPopSize, config.PopStdDev));
+                populationSize = Math.Max(10, Math.Min(500, populationSize)); // grabs the population between 10 and 500
 
                 for (int i = 0; i < populationSize; i++)
                 {
-                    var person = new Person(config)
-                    {
-                        QuarantineChance = config.MeanChanceQuarantine,          
-                        CurrentLocation = location,
+                    var person = new Person(config, location);
 
-                        
-                    };  
+
 
                     location.People.Add(person);
                 }
 
                 // log location info
-                Console.WriteLine($"Generated population size for {location.Id}: {populationSize}");
+                Console.WriteLine($"Generated population size for {location.Name}: {populationSize}");
 
             }
 
             // Infect a small percentage of the population
-            InfectInitialPopulation(0.05); 
+            InfectInitialPopulation(0.01);
 
         }
 
         private void InfectInitialPopulation(double initialInfectionRate)
         {
-            Random randy = new Random();
-
             foreach (var location in locations)
             {
                 int infectedCount = (int)(location.People.Count * initialInfectionRate);
@@ -110,8 +97,12 @@ namespace SimulationLib
 
                 for (int i = 0; i < infectedCount; i++)
                 {
-                    shuffledPeople[i].IsInfected = true;
-                    Console.WriteLine($"Person {shuffledPeople[i].Id} in location {location.Id} was initially infected.");
+                    if (!shuffledPeople[i].IsDead && !shuffledPeople[i].IsInfected) // Ensure no duplicates
+                    {
+                        shuffledPeople[i].IsInfected = true;
+                        shuffledPeople[i].InfectionCount++;
+                        Console.WriteLine($"Person {shuffledPeople[i].Id} in location {location.Name} was initially infected.");
+                    }
                 }
             }
         }
@@ -133,12 +124,6 @@ namespace SimulationLib
             return mean + z0 * stddev;
         }
 
-
-
-
-
-
-        // runs simulation, initializes CSV
         public void RunSimulation()
         {
             InitCsv();
@@ -150,10 +135,10 @@ namespace SimulationLib
 
                 foreach (var location in locations)
                 {
-                    // spread disease at location
+                    // Spread disease at the location
                     location.SpreadDisease(config.SpreadChance);
 
-                    // iteratie over each person at the location
+                    // Iterate over each person at the location
                     foreach (var person in location.People.ToList())
                     {
                         person.Travel(config.TravelChance / 100.0, travelQueue);
@@ -171,11 +156,19 @@ namespace SimulationLib
                 // Clear the travel queue for the next cycle
                 travelQueue.Clear();
 
+                if (hour % 24 == 0 && hour > 0) // Start mutation after 24 hours
+                {
+                    foreach (var location in locations)
+                    {
+                        location.MutateDisease(config); // Call the method for each location
+                    }
+                }
 
-                var (infectedMost, spreadMost, notDead, dead, infected, quarantined) = GatherStatistics();
+                
 
-                LogCsv(hour, infectedMost, spreadMost, notDead, dead, infected, quarantined);
+                
 
+                // Check if simulation end conditions are met
                 if (CheckEndConditions(locations))
                 {
                     Console.WriteLine("Simulation terminated...");
@@ -184,7 +177,11 @@ namespace SimulationLib
 
                 hour++;
             }
+            // Log statistics for this hour
+            var (infectedMost, spreadMost, notDead, dead, infected, quarantined) = GatherStatistics();
+            LogCsv(hour, infectedMost, spreadMost, notDead, dead, infected, quarantined);
         }
+
 
 
 
@@ -196,27 +193,33 @@ namespace SimulationLib
             //overwrite if exists
             using (StreamWriter writer = new StreamWriter(csvFilePath, false))
             {
-                writer.WriteLine("Hour,InfectedMost,SpreadMost,NotDead,Dead,Infected,Quarantined");
+                writer.WriteLine("Hour,InfectedMost,SpreadMost,NotDead,Dead,Infected,Quarantined,AvgPopSize,AvgPercentSick,AvgPercentQuarantined");
             }
         }
 
 
 
         /// <summary>
-        /// writes the fields to a csv file
+        /// Writes the fields to a CSV file.
         /// </summary>
-        /// <param name="hour"></param>
-        /// <param name="infectedMost"></param>
-        /// <param name="spreadMost"></param>
-        /// <param name="notDead"></param>
-        /// <param name="dead"></param>
-        /// <param name="infected"></param>
-        /// <param name="quaratined"></param>
-        public void LogCsv(int hour, Person infectedMost, Person spreadMost, int notDead, int dead, int infected, int quaratined)
+        /// <param name="hour">Current simulation hour.</param>
+        /// <param name="infectedMost">Id of the person with the most infections, or null if none.</param>
+        /// <param name="spreadMost">Person who spread the disease the most, or null if none.</param>
+        /// <param name="notDead">Number of people still alive.</param>
+        /// <param name="dead">Number of dead people.</param>
+        /// <param name="infected">Number of infected people.</param>
+        /// <param name="quarantined">Number of quarantined people.</param>
+        public void LogCsv(int hour, Person infectedMost, Person spreadMost, int notDead, int dead, int infected, int quarantined)
         {
+            
             using (StreamWriter writer = new StreamWriter(csvFilePath, true))
             {
-                writer.WriteLine($"{hour},{infectedMost?.Id},{spreadMost?.Id},{notDead},{dead},{infected},{quaratined}");
+                string infectedMostId = infectedMost != null ? infectedMost.Id.ToString() : "null";
+                string spreadMostId = spreadMost != null ? spreadMost.Id.ToString() : "null";
+
+                string result = $"{hour},{infectedMostId},{spreadMostId},{notDead},{dead},{infected},{quarantined}";
+
+                writer.WriteLine($"{result}");
             }
         }
 
@@ -225,7 +228,6 @@ namespace SimulationLib
 
 
 
-        // I threw in a method for getting the stats of it all
         public (Person InfectedMost, Person SpreadMost, int NotDead, int Dead, int Infected, int Quarantined) GatherStatistics()
         {
             Person mostInfected = null;
@@ -239,38 +241,36 @@ namespace SimulationLib
             int infected = 0;
             int quarantined = 0;
 
-            //again, there is probably a better way to write this. But, it's 3am
             foreach (var location in locations)
             {
                 foreach (var person in location.People)
                 {
-                    if (person.IsDead) dead++;
-                    else
+                    if (person.IsDead)
                     {
-                        notDead++;
-                        if (person.IsInfected) infected++;
-                        if (person.IsQuarantined) quarantined++;
+                        dead++;
+                        continue;
+                    }
 
-                        if (person.InfectionCount > maxInfections)
-                        {
-                            maxInfections = person.InfectionCount;
-                            mostInfected = person;
-                        }
+                    notDead++;
+                    if (person.IsInfected) infected++;
+                    if (person.IsQuarantined) quarantined++;
 
-                        if (person.InfectionSpreadCount > maxSpread)
-                        {
-                            maxSpread = person.InfectionSpreadCount;
-                            mostSpread = person;
-                        }
+                    if (person.InfectionCount >= maxInfections)
+                    {
+                        maxInfections = person.InfectionCount;
+                        mostInfected = person; // Assign the person with the most infections
+                    }
+
+                    if (person.InfectionSpreadCount >= maxSpread)
+                    {
+                        maxSpread = person.InfectionSpreadCount;
+                        mostSpread = person; // Assign the person with the most spreads
                     }
                 }
             }
+
             return (mostInfected, mostSpread, notDead, dead, infected, quarantined);
         }
-
-
-
-
 
     }
 }

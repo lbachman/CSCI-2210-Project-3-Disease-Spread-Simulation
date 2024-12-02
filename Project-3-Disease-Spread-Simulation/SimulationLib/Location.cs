@@ -16,11 +16,15 @@ namespace SimulationLib
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        public string Name { get; set; }
+
         public ICollection<Person> People { get; set; } = new List<Person>();
 
         public ICollection<Location> Neighbors { get; set; } = new List<Location>();
 
         public Random Rand { get;  } = new Random();
+
+        public double Popularity { get; set; } = 1.0;
 
 
         // properties that are passed in from config object
@@ -31,55 +35,93 @@ namespace SimulationLib
 
 
         // constructor takes config object
-        public Location(Configuration config)
+        public Location(Configuration config, string name)
         {
+            Name = name;
             SpreadChance = config.SpreadChance; 
             KillChance = config.KillChance;
-            
         }
 
-
-        // okay yeah this is probably bad code, but it might work!
-        public void SpreadDisease(double spread)
+        public void MutateDisease(Configuration config)
         {
-            // log number of people in location and how many are infected. 
-            Console.WriteLine($"Starting disease spread for location with {People.Count} people. Infected: {People.Count(p => p.IsInfected)}");
-
-            foreach (var person in People)
+            if (Rand.NextDouble() < config.MutationChance) // Mutation chance
             {
+                SpreadChance += Rand.NextDouble() * config.SpreadMutationRate - (config.SpreadMutationRate / 2);
+                KillChance += Rand.NextDouble() * config.KillMutationRate - (config.KillMutationRate / 2);
 
-                // Log the state of each person
-                //Console.WriteLine($"Checking person {person.Id} - Infected: {person.IsInfected}, Dead: {person.IsDead}, Quarantined: {person.IsQuarantined}");
+                // Clamp values between 0 and 100
+                SpreadChance = Math.Max(0, Math.Min(SpreadChance, 100));
+                KillChance = Math.Max(0, Math.Min(KillChance, 100));
 
-                          
-                if (!person.IsInfected && !person.IsDead && !person.IsQuarantined)
-                {
-                    foreach (var infected in People)
-                    {
-                        if (infected.IsInfected)
-                        {
-                            // Log the chance of infection and whether it was successful
-                            double infectionChance = Rand.NextDouble();
-                            Console.WriteLine($"Person {person.Id} checking infection chance against infected person {infected.Id}: {infectionChance} < {spread} = {(infectionChance < spread ? "Infected!" : "Not infected.")}");
-
-                            if (infectionChance < spread)
-                            {
-                                person.Infect();
-                                infected.SpreadInfection();
-                                Console.WriteLine($"Person {person.Id} got infected by person {infected.Id}");
-                                break; // Exit the inner loop once a person has been infected
-                            }
-
-                            
-                        }
-                    }
-                }
+                Console.WriteLine($"Location {Id} mutated: SpreadChance = {SpreadChance}, KillChance = {KillChance}");
             }
         }
 
 
+        
+        public void SpreadDisease(double spread)
+        {
+            // added a max number of contacts for people, because realistically not every infected person interacts with every not infected person :)
+
+            var infectedPeople = People.Where(p => p.IsInfected && !p.IsDead && !p.IsQuarantined).ToList();
+            var susceptiblePeople = People.Where(p => !p.IsInfected && !p.IsDead && !p.IsQuarantined).ToList();
+
+            foreach (var person in People)
+            {
+                int contactsPerHour = 3;
+                var randomContacts = susceptiblePeople.OrderBy(_ => Rand.Next()).Take(contactsPerHour).ToList();
+
+                //added newly infected people, so they dont spread the disease in the current hour simulated
+                var newlyInfected = new List<Person>();
+
+                //log the state of each person below
+                //Console.WriteLine($"Checking person {person.Id} - Infected: {person.IsInfected}, Dead: {person.IsDead}, Quarantined: {person.IsQuarantined}");
 
 
+                if (!person.IsInfected && !person.IsDead && !person.IsQuarantined)
+                {
+                    foreach (var infected in infectedPeople)
+                    {
+                        if (Rand.NextDouble() < spread / 100.0)
+                        {
+                            person.IsInfected = true;
+                            person.InfectionCount++; //increment the infection count for the newly infected person
+                            infected.InfectionSpreadCount++; //track how many others the infected person has spread to
+                            newlyInfected.Add(person);
+                            susceptiblePeople.Remove(person);
+                            break;
+                        }
+                    }
+                }
+            }
 
+            foreach (var person in infectedPeople)
+            {
+                if (Rand.NextDouble() < person.QuarantineChance) // Check quarantine probability
+                {
+                    person.IsQuarantined = true;
+                    Console.WriteLine($"Person {person.Id} has been quarantined.");
+                }
+            }
+
+
+            foreach (var person in People.Where(p => p.IsInfected && !p.IsQuarantined && !p.IsDead))
+            {
+                if (Rand.NextDouble() < person.QuarantineChance)
+                {
+                    person.IsQuarantined = true;
+                }
+            }
+
+            //handle deaths for infected people
+            foreach (var person in People.Where(p => p.IsInfected && !p.IsDead))
+            {
+                if (Rand.NextDouble() < KillChance / 100.0)
+                {
+                    person.Die();
+                    Console.WriteLine($"Person {person.Id} has died.");
+                }
+            }
+        }
     }
 }

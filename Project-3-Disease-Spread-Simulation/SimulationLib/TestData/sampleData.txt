@@ -3,13 +3,13 @@
 #
 # do not mess with the text before the colon, adjust that values on the right to set configuration
 # 
-Mean Population Size: 50
-Standard Deviation of Population Size: 150
-Percent Chance of Disease Spread: 50
+Mean Population Size: 100
+Standard Deviation of Population Size: 20
+Percent Chance of Disease Spread: 1.0
 Percent Chance of Death: 5.0
 Disease Duration (hours): 72
 Quarantine Duration (hours): 48
-Mean Quarantine Chance (%): 15.0
-Standard Deviation of Quarantine Chance: 5.0
+Mean Quarantine Chance (%): 10.0
+Standard Deviation of Quarantine Chance: 4.0
 Simulation Duration (hours): 240
 Percent Chance of Travel Per Hour: 10.0

@@ -10,7 +10,7 @@ namespace SimulationLib
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Location CurrentLocation { get; set; }  // Track the current location of the person
+        public Location? CurrentLocation { get; set; }  // Track the current location of the person
 
         public int TravelStartTime { get; set; }
 
@@ -31,9 +31,13 @@ namespace SimulationLib
         private static Random rand =  new Random();
 
 
-        public Person(Configuration config)
+        public Person(Configuration config, Location? currentLocation)
         {
-            CurrentLocation = new Location(config);
+            CurrentLocation = currentLocation;
+            QuarantineChance = Math.Max(0, Math.Min(1, RandomNormal(
+            config.MeanChanceQuarantine / 100.0,
+            config.StdDevChanceQuarantine / 100.0
+            )));
         }
 
 
@@ -41,28 +45,62 @@ namespace SimulationLib
         {
             if (rand.NextDouble() < travelChance)
             {
-                //  if CurrentLocation or Neighbors is null or empty
                 if (CurrentLocation == null || CurrentLocation.Neighbors == null || !CurrentLocation.Neighbors.Any())
                 {
                     Console.WriteLine($"Person {Id} cannot travel, no valid neighbors.");
                     return;
                 }
 
-                Location destination = CurrentLocation.Neighbors.ToList()[rand.Next(CurrentLocation.Neighbors.Count)];
+                var weightedNeighbors = CurrentLocation.Neighbors
+                    .Select(location => new { Location = location, Weight = location.Popularity })
+                    .ToList();
 
-                // Log the travel action
-                Console.WriteLine($"Person {Id} traveling from {CurrentLocation.Id} to {destination.Id}");
+                if (weightedNeighbors.All(n => n.Weight <= 0))
+                {
+                    Console.WriteLine($"Person {Id} cannot travel, all neighbors have zero or negative popularity.");
+                    return;
+                }
 
-                travelQueue.Add((this, destination));
+                double totalWeight = weightedNeighbors.Sum(n => n.Weight);
+                double randomWeight = rand.NextDouble() * totalWeight;
+
+                Location destination = null;
+                foreach (var neighbor in weightedNeighbors)
+                {
+                    if (randomWeight < neighbor.Weight)
+                    {
+                        destination = neighbor.Location;
+                        break;
+                    }
+                    randomWeight -= neighbor.Weight;
+                }
+
+                if (destination == null && weightedNeighbors.Any())
+                {
+                    // Fallback to random neighbor
+                    destination = weightedNeighbors.OrderBy(_ => rand.Next()).FirstOrDefault()?.Location;
+                    Console.WriteLine($"Fallback: Person {Id} travels to random neighbor {destination?.Name}");
+                }
+
+                if (destination != null)
+                {
+                    travelQueue.Add((this, destination));
+                    Console.WriteLine($"Person {Id} travels from {CurrentLocation.Name} to {destination.Name}.");
+                }
+                else
+                {
+                    Console.WriteLine($"Person {Id} could not determine a valid destination.");
+                }
             }
         }
 
 
 
 
+
         public void Infect()
         {
-            if (!IsDead && !IsQuarantined)
+            if (!IsDead && !IsQuarantined && !IsInfected)
             {
                 IsInfected = true;
                 InfectionSpreadCount++;
@@ -93,6 +131,15 @@ namespace SimulationLib
             {
                 IsQuarantined = rand.NextDouble() < QuarantineChance;
             }
+        }
+
+        private double RandomNormal(double mean, double stddev)
+        {
+            Random rand = new Random();
+            double u1 = rand.NextDouble();
+            double u2 = rand.NextDouble();
+            double z0 = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(2.0 * Math.PI * u2);
+            return mean + z0 * stddev;
         }
     }
 }

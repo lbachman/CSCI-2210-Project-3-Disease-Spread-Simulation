@@ -28,6 +28,12 @@ namespace SimulationLib
 
         public double TravelChance { get; set; }
 
+
+        // added these for mutations
+        public double MutationChance { get; set; } = 0.05;
+        public double SpreadMutationRate { get; set; } = 2.0;
+        public double KillMutationRate { get; set; } = 1.0;
+
         public override string ToString()
         {
             return 
@@ -42,6 +48,5 @@ namespace SimulationLib
                    $"Simulation Duration: {SimulationDuration} hours\n" +
                    $"Travel Chance Per Hour: {TravelChance}%";
         }
-
     }
 }
